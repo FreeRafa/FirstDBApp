@@ -1,20 +1,22 @@
-﻿using FirstDBApp.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Microsoft.Extensions.Configuration;
-using FirstDBApp.Data;
+using FirstDBApp.Modelos.Entidades;
 
 
-namespace FirstDBApp.Data
+namespace FirstDBApp.Infraestrutura.Data
 {
     public class FirstDBAppContext : DbContext
     {
        
         public DbSet<Cliente> Clientes { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public FirstDBAppContext(DbContextOptions<FirstDBAppContext> options) : base(options)
         {
-            optionsBuilder.UseSqlServer(AppConfig.GetConnectionString());
+        }
+
+        public FirstDBAppContext()
+        {
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,17 +1,37 @@
-﻿using FirstDBApp.Data;
+﻿using FirstDBApp.Apresentacao.GestaoMenu;
+using FirstDBApp.Infraestrutura.Data;
+using FirstDBApp.Infraestrutura.Repositorio;
+using FirstDBApp.Servico;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+IConfiguration config = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json")
+    .Build();
+
+string connectionString = config.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' não encontrada.");
+
+var service = new ServiceCollection();
+
+service.AddDbContext<FirstDBAppContext>(options =>
+    options.UseSqlServer(connectionString));
+
+//Repositorio
+service.AddScoped<ClienteRepositorio>();
+
+//Servico
+service.AddScoped<ClienteServico>();
+
+//Menu
+service.AddScoped<ClienteMenu>();
+
+using var serviceProvider = service.BuildServiceProvider();
+using var scope = serviceProvider.CreateScope();
+
+var clienteMenu = scope.ServiceProvider.GetRequiredService<ClienteMenu>();
+await clienteMenu.ExibirMenuCliente();
 
 
-
-//FirstDBAppContext cria uma instacia e atribui a context, e executa o bloco dentro das chaves usando esta instancia 
-using (FirstDBAppContext context = new FirstDBAppContext())
-{
-    //.EsureDelete-> exclui o banco de dados se ele existir, usando apenas em desenvolvimento nunca em produçao
-    context.Database.EnsureDeleted();
-    Console.WriteLine("Criando o banco de dados... \n");
-    //.EnsureCreated-> cria o banco de dados se ele existir
-    context.Database.EnsureCreated();
-    Console.WriteLine("Operaçao realizada com sucesso... \n");
-
-}
-
-Console.ReadKey();

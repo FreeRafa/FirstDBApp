@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace FirstDBApp.Models
+namespace FirstDBApp.Modelos.Entidades
 {
     public class Cliente
     {
@@ -11,6 +11,6 @@ namespace FirstDBApp.Models
         public string? Email { get; set; }
         public string? Telefone { get; set; }
         public DateOnly CriadoEm { get; set; }
-        public bool EstahAtivo { get; set; }
+        public bool EstaAtivo { get; set; }
     }
 }
