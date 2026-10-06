@@ -28,7 +28,14 @@ namespace FirstDBApp.Servico
                 throw new ArgumentException("O email do cliente é obrigatório.");
             }
             
-            return await _clienteRepositorio.CriarCliente(cliente);
+            return await _clienteRepositorio.CriarClienteAsync(cliente);
         }
+
+        public async Task<List<Cliente>> ObterTodosOsClientes()
+        {
+            return await _clienteRepositorio.ObterTodosOsClientes();
+        }
+
+
     }
 }

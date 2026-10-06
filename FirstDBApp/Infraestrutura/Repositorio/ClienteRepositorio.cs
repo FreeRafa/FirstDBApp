@@ -14,17 +14,23 @@ namespace FirstDBApp.Infraestrutura.Repositorio
             _context = context;
         }
 
-        public async Task<Cliente> CriarCliente(Cliente cliente)
+        public async Task<Cliente> CriarClienteAsync(Cliente cliente)
         {
             _context.Clientes.Add(cliente);
             await _context.SaveChangesAsync();
             return cliente;
         }
 
-        
+        public async Task<List<Cliente>> ObterTodosOsClientes()
+        {
+            return await _context.Clientes.ToListAsync();
+        }
+
+
+
     }
 }
 
 
-    
+
 

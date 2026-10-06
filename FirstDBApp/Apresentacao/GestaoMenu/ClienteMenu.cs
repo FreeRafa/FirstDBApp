@@ -22,6 +22,7 @@ namespace FirstDBApp.Apresentacao.GestaoMenu
                 Console.WriteLine();
                 Console.WriteLine("=== Menu de Clientes ===");
                 Console.WriteLine("1 - Adicionar cliente");
+                Console.WriteLine("2 - Listar todos os clientes");
                 Console.WriteLine("0 - Sair");
                 Console.Write("Escolha uma opção: ");
                 opcao = Console.ReadLine();
@@ -30,6 +31,9 @@ namespace FirstDBApp.Apresentacao.GestaoMenu
                 {
                     case "1":
                         await CriarCliente();
+                        break;
+                    case "2":
+                        await ListarTodosOsClientes();
                         break;
                     case "0":
                         Console.WriteLine("A sair...");
@@ -76,6 +80,22 @@ namespace FirstDBApp.Apresentacao.GestaoMenu
             catch (DbUpdateException ex)
             {
                 Console.WriteLine($"Erro ao guardar na base de dados: {ex.InnerException?.Message ?? ex.Message}");
+            }
+        }
+
+        private async Task ListarTodosOsClientes()
+        {
+            Console.WriteLine();
+            Console.WriteLine("=== Lista de Clientes ===");
+            var clientes = await _clienteServico.ObterTodosOsClientes();
+            if (clientes.Count == 0)
+            {
+                Console.WriteLine("Nenhum cliente encontrado.");
+                return;
+            }
+            foreach (var cliente in clientes)
+            {
+                Console.WriteLine($"ID: {cliente.ClienteId}, Nome: {cliente.Nome}, Email: {cliente.Email}, Telefone: {cliente.Telefone}");
             }
         }
     }
