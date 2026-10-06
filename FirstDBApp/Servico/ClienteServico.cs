@@ -36,6 +36,10 @@ namespace FirstDBApp.Servico
             return await _clienteRepositorio.ObterTodosOsClientes();
         }
 
+        public async Task<Cliente?> ObterClientePorId(int clienteId)
+        {
+            return await _clienteRepositorio.ObterClientePorIdAsync(clienteId);
+        }
 
     }
 }

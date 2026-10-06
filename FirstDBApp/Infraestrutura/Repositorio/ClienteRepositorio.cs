@@ -26,7 +26,10 @@ namespace FirstDBApp.Infraestrutura.Repositorio
             return await _context.Clientes.ToListAsync();
         }
 
-
+        public async Task<Cliente?> ObterClientePorIdAsync(int clienteId)
+        {
+            return await _context.Clientes.FindAsync(clienteId);
+        }
 
     }
 }
