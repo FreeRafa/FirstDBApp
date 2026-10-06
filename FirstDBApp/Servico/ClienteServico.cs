@@ -41,5 +41,10 @@ namespace FirstDBApp.Servico
             return await _clienteRepositorio.ObterClientePorIdAsync(clienteId);
         }
 
+        public async Task DeletarCliente(int clienteId)
+        {
+            await _clienteRepositorio.DeletarClienteAsync(clienteId);
+        }
+
     }
 }

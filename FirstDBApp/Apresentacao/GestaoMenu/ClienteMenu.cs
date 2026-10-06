@@ -24,6 +24,7 @@ namespace FirstDBApp.Apresentacao.GestaoMenu
                 Console.WriteLine("1 - Adicionar cliente");
                 Console.WriteLine("2 - Listar todos os clientes");
                 Console.WriteLine("3 - Obter cliente por ID");
+                Console.WriteLine("4 - Deletar cliente");
                 Console.WriteLine("0 - Sair");
                 Console.Write("Escolha uma opção: ");
                 opcao = Console.ReadLine();
@@ -38,6 +39,9 @@ namespace FirstDBApp.Apresentacao.GestaoMenu
                         break;
                     case "3":
                         await ObterClientePorId();
+                        break;
+                    case "4":
+                        await DeletarCliente();
                         break;
                     case "0":
                         Console.WriteLine("A sair...");
@@ -125,6 +129,40 @@ namespace FirstDBApp.Apresentacao.GestaoMenu
                 if (cliente != null)
                 {
                     Console.WriteLine($"ID: {cliente.ClienteId}, Nome: {cliente.Nome}, Email: {cliente.Email}, Telefone: {cliente.Telefone}");
+                }
+                else
+                {
+                    Console.WriteLine("Cliente não encontrado.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("ID inválido. Por favor, insira um número inteiro.");
+            }
+        }
+
+        private async Task DeletarCliente()
+        {
+            Console.WriteLine();
+            Console.WriteLine("=== Deletar Cliente ===");
+            Console.WriteLine("Digite o ID do cliente que deseja deletar: ");
+            var clientes = await _clienteServico.ObterTodosOsClientes();
+            if (clientes.Count == 0)
+            {
+                Console.WriteLine("Nenhum cliente encontrado.");
+                return;
+            }
+            foreach (var cliente in clientes)
+            {
+                Console.WriteLine($"ID: {cliente.ClienteId}, Nome: {cliente.Nome}");
+            }
+            if (int.TryParse(Console.ReadLine(), out int clienteId))
+            {
+                var cliente = await _clienteServico.ObterClientePorId(clienteId);
+                if (cliente != null)
+                {
+                    await _clienteServico.DeletarCliente(clienteId);
+                    Console.WriteLine("Cliente deletado com sucesso.");
                 }
                 else
                 {
