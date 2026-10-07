@@ -15,7 +15,7 @@ namespace FirstDBApp.Servico
             _clienteRepositorio = clienteRepositorio;
         }
 
-        public async Task<Cliente> CriarCliente(Cliente cliente)
+        public async Task<Cliente> CriarClienteAsync(Cliente cliente)
         {
             
             if (string.IsNullOrWhiteSpace(cliente.Nome))
@@ -57,6 +57,14 @@ namespace FirstDBApp.Servico
                 throw new ArgumentException("O email do cliente é obrigatório.");
             }
             await _clienteRepositorio.AtualizarClienteAsync(cliente);
+        }
+
+        public async Task<IReadOnlyList<Cliente>> PesquisarPorNomeAsync(string? nome)
+        {
+            if (string.IsNullOrWhiteSpace(nome))
+                return Array.Empty<Cliente>();
+
+            return await _clienteRepositorio.PesquisarPorNomeAsync(nome.Trim());
         }
 
     }

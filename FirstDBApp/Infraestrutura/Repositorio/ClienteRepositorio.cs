@@ -47,6 +47,15 @@ namespace FirstDBApp.Infraestrutura.Repositorio
             await _context.SaveChangesAsync();
         }
 
+        public async Task<IReadOnlyList<Cliente>> PesquisarPorNomeAsync(string termo)
+        {
+            return await _context.Clientes
+                .AsNoTracking()
+                .Where(c => c.Nome.Contains(termo))
+                .OrderBy(c => c.Nome)
+                .ToListAsync();
+        }
+
     }
 }
 

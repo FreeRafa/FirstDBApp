@@ -1,4 +1,5 @@
-﻿using FirstDBApp.Modelos.Entidades;
+﻿using FirstDBApp.Infraestrutura.Repositorio;
+using FirstDBApp.Modelos.Entidades;
 using FirstDBApp.Servico;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +27,7 @@ namespace FirstDBApp.Apresentacao.GestaoMenu
                 Console.WriteLine("3 - Obter cliente por ID");
                 Console.WriteLine("4 - Deletar cliente");
                 Console.WriteLine("5 - Atualizar cliente");
+                Console.WriteLine("6 - Pesquisar cliente por nome");
                 Console.WriteLine("0 - Sair");
                 Console.Write("Escolha uma opção: ");
                 opcao = Console.ReadLine();
@@ -33,7 +35,7 @@ namespace FirstDBApp.Apresentacao.GestaoMenu
                 switch (opcao)
                 {
                     case "1":
-                        await CriarCliente();
+                        await CriarClienteAsync();
                         break;
                     case "2":
                         await ListarTodosOsClientes();
@@ -47,6 +49,9 @@ namespace FirstDBApp.Apresentacao.GestaoMenu
                     case "5":
                         await AtualizarCliente();
                         break;
+                    case "6":
+                        await PesquisarClientesPorNome();
+                        break;
                     case "0":
                         Console.WriteLine("A sair...");
                         break;
@@ -57,7 +62,7 @@ namespace FirstDBApp.Apresentacao.GestaoMenu
             } while (opcao != "0");
         }
 
-        private async Task CriarCliente()
+        private async Task CriarClienteAsync()
         {
             Console.WriteLine();
             Console.WriteLine("=== Adicionar Cliente ===");
@@ -82,7 +87,7 @@ namespace FirstDBApp.Apresentacao.GestaoMenu
 
             try
             {
-                await _clienteServico.CriarCliente(cliente);
+                await _clienteServico.CriarClienteAsync(cliente);
                 Console.WriteLine("Cliente criado com sucesso!");
             }
             catch (ArgumentException ex)
@@ -231,6 +236,39 @@ namespace FirstDBApp.Apresentacao.GestaoMenu
             else
             {
                 Console.WriteLine("ID inválido. Por favor, insira um número inteiro.");
+            }
+        }
+
+        private async Task PesquisarClientesPorNome()
+        {
+            Console.WriteLine();
+            Console.WriteLine("=== Pesquisar Cliente por Nome ===");
+            Console.Write("Digite o nome (ou parte do nome): ");
+            string? termo = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(termo))
+            {
+                Console.WriteLine("Termo de pesquisa inválido.");
+                return;
+            }
+
+            var clientes = await _clienteServico.PesquisarPorNomeAsync(termo);
+
+            if (clientes.Count == 0)
+            {
+                Console.WriteLine("Nenhum cliente encontrado com o nome informado.");
+                return;
+            }
+
+            Console.WriteLine("Clientes encontrados:");
+            MostrarClientes(clientes);
+        }
+
+        private static void MostrarClientes(IReadOnlyList<Cliente> clientes)
+        {
+            foreach (var cliente in clientes)
+            {
+                Console.WriteLine($"ID: {cliente.ClienteId}, Nome: {cliente.Nome}, Email: {cliente.Email}, Telefone: {cliente.Telefone}");
             }
         }
     }
