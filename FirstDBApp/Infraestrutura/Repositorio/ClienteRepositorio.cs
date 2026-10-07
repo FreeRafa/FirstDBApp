@@ -41,6 +41,12 @@ namespace FirstDBApp.Infraestrutura.Repositorio
             }
         }
 
+        public async Task AtualizarClienteAsync(Cliente cliente)
+        {
+            _context.Clientes.Update(cliente);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
 

@@ -25,6 +25,7 @@ namespace FirstDBApp.Apresentacao.GestaoMenu
                 Console.WriteLine("2 - Listar todos os clientes");
                 Console.WriteLine("3 - Obter cliente por ID");
                 Console.WriteLine("4 - Deletar cliente");
+                Console.WriteLine("5 - Atualizar cliente");
                 Console.WriteLine("0 - Sair");
                 Console.Write("Escolha uma opção: ");
                 opcao = Console.ReadLine();
@@ -42,6 +43,9 @@ namespace FirstDBApp.Apresentacao.GestaoMenu
                         break;
                     case "4":
                         await DeletarCliente();
+                        break;
+                    case "5":
+                        await AtualizarCliente();
                         break;
                     case "0":
                         Console.WriteLine("A sair...");
@@ -163,6 +167,61 @@ namespace FirstDBApp.Apresentacao.GestaoMenu
                 {
                     await _clienteServico.DeletarCliente(clienteId);
                     Console.WriteLine("Cliente deletado com sucesso.");
+                }
+                else
+                {
+                    Console.WriteLine("Cliente não encontrado.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("ID inválido. Por favor, insira um número inteiro.");
+            }
+        }
+
+        private async Task AtualizarCliente()
+        {
+            Console.WriteLine();
+            Console.WriteLine("=== Atualizar Cliente ===");
+            Console.WriteLine("Digite o ID do cliente que deseja atualizar: ");
+            var clientes = await _clienteServico.ObterTodosOsClientes();
+            if (clientes.Count == 0)
+            {
+                Console.WriteLine("Nenhum cliente encontrado.");
+                return;
+            }
+            foreach (var cliente in clientes)
+            {
+                Console.WriteLine($"ID: {cliente.ClienteId}, Nome: {cliente.Nome}");
+            }
+            if (int.TryParse(Console.ReadLine(), out int clienteId))
+            {
+                var cliente = await _clienteServico.ObterClientePorId(clienteId);
+                if (cliente != null)
+                {
+                    Console.Write($"Nome ({cliente.Nome}): ");
+                    string? nome = Console.ReadLine() ?? cliente.Nome;
+                    Console.Write($"Email ({cliente.Email}): ");
+                    string? email = Console.ReadLine() ?? cliente.Email;
+                    Console.Write($"Telefone ({cliente.Telefone}): ");
+                    string? telefone = Console.ReadLine();
+                    telefone = string.IsNullOrWhiteSpace(telefone) ? cliente.Telefone : telefone;
+                    cliente.Nome = nome;
+                    cliente.Email = email;
+                    cliente.Telefone = telefone;
+                    try
+                    {
+                        await _clienteServico.AtualizarCliente(cliente);
+                        Console.WriteLine("Cliente atualizado com sucesso!");
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine($"Dados inválidos: {ex.Message}");
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        Console.WriteLine($"Erro ao guardar na base de dados: {ex.InnerException?.Message ?? ex.Message}");
+                    }
                 }
                 else
                 {

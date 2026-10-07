@@ -46,5 +46,18 @@ namespace FirstDBApp.Servico
             await _clienteRepositorio.DeletarClienteAsync(clienteId);
         }
 
+        public async Task AtualizarCliente(Cliente cliente)
+        {
+            if (string.IsNullOrWhiteSpace(cliente.Nome))
+            {
+                throw new ArgumentException("O nome do cliente é obrigatório.");
+            }
+            if (string.IsNullOrWhiteSpace(cliente.Email))
+            {
+                throw new ArgumentException("O email do cliente é obrigatório.");
+            }
+            await _clienteRepositorio.AtualizarClienteAsync(cliente);
+        }
+
     }
 }
