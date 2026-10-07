@@ -1,5 +1,4 @@
-﻿using FirstDBApp.Infraestrutura.Repositorio;
-using FirstDBApp.Modelos.Entidades;
+﻿using FirstDBApp.Modelos.Entidades;
 using FirstDBApp.Servico;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +27,7 @@ namespace FirstDBApp.Apresentacao.GestaoMenu
                 Console.WriteLine("4 - Deletar cliente");
                 Console.WriteLine("5 - Atualizar cliente");
                 Console.WriteLine("6 - Pesquisar cliente por nome");
+                Console.WriteLine("7 - Deletar cliente (por ID)");
                 Console.WriteLine("0 - Sair");
                 Console.Write("Escolha uma opção: ");
                 opcao = Console.ReadLine();
@@ -51,6 +51,9 @@ namespace FirstDBApp.Apresentacao.GestaoMenu
                         break;
                     case "6":
                         await PesquisarClientesPorNome();
+                        break;
+                    case "7":
+                        await DeletarClienteAsync();
                         break;
                     case "0":
                         Console.WriteLine("A sair...");
@@ -269,6 +272,40 @@ namespace FirstDBApp.Apresentacao.GestaoMenu
             foreach (var cliente in clientes)
             {
                 Console.WriteLine($"ID: {cliente.ClienteId}, Nome: {cliente.Nome}, Email: {cliente.Email}, Telefone: {cliente.Telefone}");
+            }
+        }
+
+        private async Task DeletarClienteAsync()
+        {
+            Console.WriteLine();
+            Console.WriteLine("=== Deletar Cliente (por ID) ===");
+            Console.WriteLine("Digite o ID do cliente que deseja deletar: ");
+            var clientes = await _clienteServico.ObterTodosOsClientes();
+            if (clientes.Count == 0)
+            {
+                Console.WriteLine("Nenhum cliente encontrado.");
+                return;
+            }
+            foreach (var cliente in clientes)
+            {
+                Console.WriteLine($"ID: {cliente.ClienteId}, Nome: {cliente.Nome}");
+            }
+            if (int.TryParse(Console.ReadLine(), out int clienteId))
+            {
+                var cliente = await _clienteServico.ObterClientePorId(clienteId);
+                if (cliente != null)
+                {
+                    await _clienteServico.DeletarCliente(clienteId);
+                    Console.WriteLine("Cliente deletado com sucesso.");
+                }
+                else
+                {
+                    Console.WriteLine("Cliente não encontrado.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("ID inválido. Por favor, insira um número inteiro.");
             }
         }
     }

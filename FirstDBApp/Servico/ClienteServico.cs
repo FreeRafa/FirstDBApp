@@ -67,5 +67,10 @@ namespace FirstDBApp.Servico
             return await _clienteRepositorio.PesquisarPorNomeAsync(nome.Trim());
         }
 
+        public async Task<Cliente> DeletarClienteAsync(Cliente cliente)
+        {
+            return await _clienteRepositorio.DeletarClienteAsync(cliente);
+        }
+
     }
 }

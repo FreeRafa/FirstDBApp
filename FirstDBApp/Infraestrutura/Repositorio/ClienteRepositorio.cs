@@ -56,6 +56,13 @@ namespace FirstDBApp.Infraestrutura.Repositorio
                 .ToListAsync();
         }
 
+        public async Task<Cliente> DeletarClienteAsync(Cliente cliente)
+        {
+            _context.Clientes.Remove(cliente);
+            await _context.SaveChangesAsync();
+            return cliente;
+        }
+
     }
 }
 
